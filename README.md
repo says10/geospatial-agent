@@ -1,1 +1,2 @@
 # geospatial-agent
+its a vision that develops a neuro symbolic spatial agent i.e. self learning geospatial mind that sees like a satellite, thinks like a planner, and acts like an expert turning natural queries into explainable, evolving GIS intelligence.
