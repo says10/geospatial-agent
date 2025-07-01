@@ -1,7 +1,35 @@
-openai
-langchain
+# --- LLM / Embedding ---
+openai>=1.23.0
+sentence-transformers
 tiktoken
-python-dotenv
+
+# --- Vector Memory ---
+faiss-cpu        # swap for faiss-gpu if you have CUDA
+
+# --- Geospatial ---
 geopandas
 shapely
-folium
+rasterio
+
+# --- API / Backend ---
+fastapi
+uvicorn[standard]
+pydantic
+httpx           # internal API calls
+
+# --- Security ---
+python-jose[cryptography]   # JWT
+passlib[bcrypt]             # password hashing
+slowapi                     # rate limiting
+loguru                      # structured logging
+
+# --- UI / Visualization ---
+streamlit
+plotly
+graphviz
+
+# --- Dev / Testing ---
+python-dotenv
+pytest
+pytest-asyncio
+networkx        # optional (alt. graph render)
