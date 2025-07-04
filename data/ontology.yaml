@@ -1,40 +1,45 @@
-# data/ontology.yaml
 tools:
   - name: buffer_operation
-    description: Creates a buffer around a geometry.
+    description: Creates a buffer around a GeoDataFrame.
     parameters:
-      geometry:
-        type: string
-        description: The WKT representation of the geometry to buffer.
+      gdf:
+        type: geopandas.GeoDataFrame
+        description: The GeoDataFrame to buffer.
       distance:
         type: float
         description: The buffer distance in meters.
-    returns:
-      type: string
-      description: The WKT representation of the buffered geometry.
-
+    return_type: geopandas.GeoDataFrame
   - name: intersect_operation
-    description: Finds the intersection between two geometries.
+    description: Calculates the intersection between two GeoDataFrames.
     parameters:
-      geometry1:
-        type: string
-        description: The WKT representation of the first geometry.
-      geometry2:
-        type: string
-        description: The WKT representation of the second geometry.
-    returns:
-      type: string
-      description: The WKT representation of the intersection geometry.
-
-  - name: retrieve_features
-    description: Retrieves features from a geospatial database based on a spatial filter.
+      gdf1:
+        type: geopandas.GeoDataFrame
+        description: The first GeoDataFrame.
+      gdf2:
+        type: geopandas.GeoDataFrame
+        description: The second GeoDataFrame.
+    return_type: geopandas.GeoDataFrame
+  - name: read_shapefile
+    description: Reads a shapefile into a GeoDataFrame.
     parameters:
-      layer_name:
-        type: string
-        description: The name of the layer to retrieve features from (e.g., "schools", "flood_zones").
-      spatial_filter:
-        type: string
-        description: A WKT representation of the spatial filter to apply.  This could be a bounding box, a polygon, etc.
-    returns:
-      type: list
-      description: A list of GeoJSON feature dictionaries representing the retrieved features.
+      filename:
+        type: str
+        description: The path to the shapefile.
+    return_type: geopandas.GeoDataFrame
+  - name: read_raster
+    description: Reads a raster file into a raster object (e.g., DEM).
+    parameters:
+      filename:
+        type: str
+        description: The path to the raster file (e.g., DEM).
+    return_type: rasterio.DatasetReader
+  - name: calculate_area
+    description: Calculates the area of a GeoDataFrame, optionally correcting for terrain slope.
+    parameters:
+      gdf:
+        type: geopandas.GeoDataFrame
+        description: The GeoDataFrame for which to calculate the area.
+      slope_corrected:
+        type: bool
+        description: Whether to correct the area calculation for terrain slope.  Defaults to False.
+    return_type: float

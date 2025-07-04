@@ -1,86 +1,102 @@
 import json
 import logging
-import os
-from typing import Any, Dict, List
+from typing import Dict, Any
 
-import openai
-from openai.types.chat import ChatCompletion
+from langchain_openai import ChatOpenAI
+from langchain_core.output_parsers import PydanticOutputParser
+from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
+from langchain.schema import SystemMessage
+from langchain_core.runnables import chain
+from pydantic import BaseModel, Field
 
-from geospatial_agent.domain.models import Plan
-from geospatial_agent.infrastructure.config import settings
+from geospatial_agent.infrastructure.rag.ontology import load_ontology
+from geospatial_agent.infrastructure.config import Config
 
-# Set up logging
+# Initialize logging
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
+# Define Pydantic model for the plan
+class Plan(BaseModel):
+    """
+    A plan is a series of steps to be executed.
+    """
+    steps: list[Dict[str, Any]] = Field(
+        ...,
+        description="A list of steps to be executed in order. Each step should include function_name and parameters.",
+    )
+
+# Load ontology
+ontology = load_ontology(Config.ONTOLOGY_FILE_PATH)
+
+# Build tool descriptions for prompt
+tool_descriptions = "\n".join(
+    [
+        f"- {tool['name']}: {tool['description']}. Parameters: {tool['parameters']}"
+        for tool in ontology["tools"]
+    ]
+)
+
+# Define the prompt template
+SYSTEM_TEMPLATE = f"""
+You are a helpful AI agent that generates execution plans for geospatial tasks.
+You have access to the following tools:
+{tool_descriptions}
+Given a user query, create a JSON plan consisting of steps to accomplish the task.
+The plan should be a valid JSON object that is a list of dictionaries.
+Given a user query, create a JSON plan consisting of steps to accomplish the task.
+The plan MUST be a valid JSON object that conforms to the following schema:
+```json
+{json.dumps(Plan.model_json_schema())}
+Each dictionary should have the following keys: "function_name" and "parameters".
+The "function_name" key should be one of the available tools.
+The "parameters" key should be a dictionary of parameters required for the tool.
+The plan should be as concise as possible.
+Do not add any explanations or other text.
+"""
 
 class PlannerAgent:
     """
-    An agent that uses an LLM to convert a user query into a structured JSON plan.
+    An agent that uses an LLM to generate execution plans for geospatial tasks.
     """
 
-    def __init__(self, model_name: str = "gpt-3.5-turbo"):
+    def __init__(self, model_name="gpt-3.5-turbo"):
         """
         Initializes the PlannerAgent.
-
         Args:
-            model_name: The name of the OpenAI model to use.  Defaults to gpt-4o.
+            model_name: The name of the OpenAI model to use. Defaults to "gpt-4o".
         """
-        self.model_name = model_name
-        openai.api_key = settings.openai_api_key
+        self.llm = ChatOpenAI(model_name=model_name, temperature=0, openai_api_key=Config.OPENAI_API_KEY)
+        self.prompt = ChatPromptTemplate.from_messages(
+            [
+                SystemMessage(content=SYSTEM_TEMPLATE),
+                HumanMessagePromptTemplate.from_template("User query: {query}"),
+            ]
+        )
+        self.chain = self.prompt | self.llm
 
-    def create_plan(self, query: str, tools: List[Dict[str, Any]]) -> Plan:
+    def create_plan(self, query: str) -> Plan:
         """
-        Converts a natural language query into a structured JSON plan using OpenAI Function Calling.
-
+        Creates an execution plan for the given query.
         Args:
-            query: The natural language query from the user.
-            tools: A list of dictionaries describing the available tools (functions).
-
+            query: The user query.
         Returns:
-            A Plan object representing the structured JSON plan.
-
-        Raises:
-            Exception: If the OpenAI API call fails.
+            A Plan object representing the execution plan.
         """
         try:
-            # Call the OpenAI API with function definitions
-            response: ChatCompletion = openai.chat.completions.create(
-                model=self.model_name,
-                messages=[{"role": "user", "content": query}],
-                functions=tools,
-                function_call="auto",  # Let OpenAI decide when to use functions
-            )
-
-            message = response.choices[0].message
-
-            # Check if the LLM decided to use a function
-            if message.function_call:
-                function_name = message.function_call.name
-                arguments = message.function_call.arguments
-
-                # Parse the arguments string into a JSON object
-                try:
-                    arguments_json = json.loads(arguments)
-                except json.JSONDecodeError as e:
-                    logger.error(f"Error decoding arguments JSON: {e}")
-                    raise  # Re-raise the exception
-
-                # Construct the plan
-                plan_data = {
-                    "tool": function_name,
-                    "parameters": arguments_json,
-                }
-
-                plan = Plan(**plan_data)
-                logger.info(f"Generated Plan: {plan}")
-                return plan
-            else:
-                # The LLM didn't call a function.  Handle this case appropriately.
-                # For now, we'll just log a warning and return None.
-                logger.warning("LLM did not call a function.")
-                return Plan(tool="unknown", parameters={})
-
+            parser = PydanticOutputParser(pydantic_object=Plan)
+            prompt = self.prompt.format_messages(query=query)
+            response = self.llm(prompt)
+            logger.info(f"Raw LLM output: {response.content}") 
+            plan = parser.parse(response.content)
+            logger.info(f"Generated plan: {plan}")
+            return plan
         except Exception as e:
-            logger.error(f"Error during OpenAI API call: {e}")
-            raise  # Re-raise the exception to be handled upstream
+            logger.exception("Error creating plan:")
+            raise
+
+if __name__ == '__main__':
+    planner = PlannerAgent()
+    query = "Calculate the area of a plot of land, correcting for terrain slope."  # Modified Query
+    plan = planner.create_plan(query)
+    print(plan.model_dump_json(indent=2))
