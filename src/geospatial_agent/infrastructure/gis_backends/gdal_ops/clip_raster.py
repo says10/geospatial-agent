@@ -60,15 +60,13 @@ def clip_raster_with_vector(
                 geometries = [mapping(geom) for geom in gdf.geometry]
 
             # Perform the clipping operation
-            # `crop=True` crops the output raster to the extent of the geometries
-            # `nodata=src.nodata` ensures the NoData value is preserved in the output
             out_image, out_transform = mask(src, geometries, crop=True, nodata=src.nodata)
             logger.debug(f"Raster masked. Output image shape: {out_image.shape}")
 
             # Update metadata for the clipped raster
             out_meta = src.meta.copy()
             out_meta.update({
-                "driver": "GTiff", # Ensure output is GeoTIFF
+                "driver": "GTiff",
                 "height": out_image.shape[1],
                 "width": out_image.shape[2],
                 "transform": out_transform,
@@ -104,4 +102,22 @@ def clip_raster_with_vector(
         return RasterData(
             path="N/A",
             crs="Unknown",
-            width=0, height=0, pixel_size_x=0.0, pixel_size_y=0.
+            width=0, height=0, pixel_size_x=0.0, pixel_size_y=0.0, band_count=0,
+            metadata={"error": str(e), "message": "Input file not found for clipping."},
+        )
+    except rasterio.errors.RasterioIOError as e:
+        logger.error(f"Raster I/O error during clipping: {e}")
+        return RasterData(
+            path="N/A",
+            crs="Unknown",
+            width=0, height=0, pixel_size_x=0.0, pixel_size_y=0.0, band_count=0,
+            metadata={"error": str(e), "message": "Raster I/O error during clipping."},
+        )
+    except Exception as e:
+        logger.error(f"An unexpected error occurred during raster clipping: {e}")
+        return RasterData(
+            path="N/A",
+            crs="Unknown",
+            width=0, height=0, pixel_size_x=0.0, pixel_size_y=0.0, band_count=0,
+            metadata={"error": str(e), "message": f"An unexpected error occurred: {e}"},
+        )

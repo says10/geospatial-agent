@@ -46,9 +46,6 @@ def convert_vector_format(
 
         # Ensure output directory exists for formats like Shapefile which are folders
         if output_format.lower() == "esri shapefile":
-            # For shapefiles, the output_vector_path is typically the .shp file itself,
-            # but geopandas will create the necessary sidecar files in the same directory.
-            # So we just ensure the parent directory exists.
             output_vector_path.parent.mkdir(parents=True, exist_ok=True)
         else:
             output_vector_path.parent.mkdir(parents=True, exist_ok=True)

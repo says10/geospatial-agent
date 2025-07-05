@@ -61,7 +61,7 @@ def read_shapefile_into_geodataframe(
         additional_metadata = {
             "columns": list(gdf.columns),
             "file_size_bytes": input_vector_path.stat().st_size if input_vector_path.exists() else 0,
-            "driver": str(gdf.crs) if gdf.crs else "Unknown" # Store CRS as string in metadata for completeness
+            "driver": gdf.crs.to_wkt() if gdf.crs else "Unknown" # Store CRS as WKT in metadata for completeness
         }
         logger.debug(f"Additional metadata: {additional_metadata}")
 
