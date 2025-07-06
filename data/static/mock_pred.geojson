@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[77.60, 12.90], [77.605, 12.905], [77.61, 12.91], [77.608, 12.915], [77.60, 12.912], [77.60, 12.90]]]
+      },
+      "properties": {
+        "zone_name": "Pred Zone 1",
+        "risk_level": "Low",
+        "times": ["2023-07-01T00:00:00Z"]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[77.62, 12.92], [77.625, 12.925], [77.63, 12.93], [77.628, 12.935], [77.62, 12.932], [77.62, 12.92]]]
+      },
+      "properties": {
+        "zone_name": "Pred Zone 2",
+        "risk_level": "Medium",
+        "times": ["2023-07-02T00:00:00Z"]
+      }
+    }
+  ]
+} 

@@ -1,0 +1,29 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[77.64, 12.94], [77.645, 12.945], [77.65, 12.95], [77.648, 12.955], [77.64, 12.952], [77.64, 12.94]]]
+      },
+      "properties": {
+        "zone_name": "Obs Zone 1",
+        "risk_level": "High",
+        "times": ["2023-07-01T00:00:00Z"]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[77.66, 12.96], [77.665, 12.965], [77.67, 12.97], [77.668, 12.975], [77.66, 12.972], [77.66, 12.96]]]
+      },
+      "properties": {
+        "zone_name": "Obs Zone 2",
+        "risk_level": "Medium",
+        "times": ["2023-07-02T00:00:00Z"]
+      }
+    }
+  ]
+} 
