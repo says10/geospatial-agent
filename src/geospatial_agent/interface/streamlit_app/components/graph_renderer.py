@@ -72,14 +72,8 @@ def render_workflow_graph(plan, edges=None, height=600, width="100%"):
             },
             borderWidth=3,
             shadow=True,
-            shapeProperties={'borderRadius': 16},
-            font={
-                'size': 22,
-                'face': 'Segoe UI, Arial, sans-serif',
-                'color': '#222',
-                'bold': True
-            },
-            margin=20
+            # Use default font for guaranteed visibility
+            font={'color': 'black', 'size': 22, 'bold': True}
         )
     # Add edges
     if edges:
@@ -95,14 +89,7 @@ def render_workflow_graph(plan, edges=None, height=600, width="100%"):
     net.set_options("""
     var options = {
       "layout": {
-        "hierarchical": {
-          "enabled": true,
-          "direction": "LR",
-          "sortMethod": "directed",
-          "levelSeparation": 350,
-          "nodeSpacing": 300,
-          "treeSpacing": 400
-        }
+        "improvedLayout": true
       },
       "nodes": {
         "borderWidth": 3,
@@ -112,12 +99,10 @@ def render_workflow_graph(plan, edges=None, height=600, width="100%"):
           "borderRadius": 16
         },
         "font": {
-          "size": 22,
-          "face": "Segoe UI, Arial, sans-serif",
-          "color": "#222",
+          "size": 32,
+          "color": "black",
           "bold": true
-        },
-        "margin": 20
+        }
       },
       "edges": {
         "arrows": {
@@ -127,27 +112,45 @@ def render_workflow_graph(plan, edges=None, height=600, width="100%"):
           }
         },
         "smooth": {
-          "type": "cubicBezier",
-          "forceDirection": "horizontal",
-          "roundness": 0.4
+          "type": "dynamic"
         },
         "color": {
           "color": "#757575",
           "highlight": "#1976d2",
           "inherit": false
-        },
-        "font": {
-          "size": 20,
-          "align": "top",
-          "background": "#fff",
-          "strokeWidth": 3,
-          "strokeColor": "#fff",
-          "bold": true
         }
       },
-      "physics": {
+      "interaction": {
+        "dragNodes": true,
+        "dragView": true,
+        "zoomView": true,
+        "multiselect": true,
+        "navigationButtons": true
+      },
+      "manipulation": {
         "enabled": false
+      },
+      "physics": {
+        "enabled": true,
+        "repulsion": {
+          "centralGravity": 0.1,
+          "springLength": 600,
+          "springConstant": 0.02,
+          "nodeDistance": 700,
+          "damping": 0.09
+        },
+        "minVelocity": 0.5
       }
     }
     """)
+    # Add custom JS to set initial zoom and center
+    net.html += """
+    <script type='text/javascript'>
+      window.addEventListener('load', function() {
+        if (window.network) {
+          window.network.moveTo({scale: 2.5, animation: true});
+        }
+      });
+    </script>
+    """
     return net.generate_html()

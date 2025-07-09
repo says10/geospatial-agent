@@ -1,0 +1,30 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"flood": "predicted", "time": "2023-08-01"},
+      "geometry": {"type": "Polygon", "coordinates": [[[77.61, 12.97], [77.62, 12.97], [77.62, 12.98], [77.61, 12.98], [77.61, 12.97]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"flood": "predicted", "time": "2023-08-02"},
+      "geometry": {"type": "Polygon", "coordinates": [[[77.615, 12.975], [77.625, 12.975], [77.625, 12.985], [77.615, 12.985], [77.615, 12.975]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"flood": "predicted", "time": "2023-08-03"},
+      "geometry": {"type": "Polygon", "coordinates": [[[77.62, 12.98], [77.63, 12.98], [77.63, 12.99], [77.62, 12.99], [77.62, 12.98]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"flood": "predicted", "time": "2023-08-04"},
+      "geometry": {"type": "Polygon", "coordinates": [[[77.625, 12.985], [77.635, 12.985], [77.635, 12.995], [77.625, 12.995], [77.625, 12.985]]]}
+    },
+    {
+      "type": "Feature",
+      "properties": {"flood": "predicted", "time": "2023-08-05"},
+      "geometry": {"type": "Polygon", "coordinates": [[[77.63, 12.99], [77.64, 12.99], [77.64, 13.0], [77.63, 13.0], [77.63, 12.99]]]}
+    }
+  ]
+} 

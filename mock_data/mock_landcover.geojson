@@ -1,0 +1,37 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "class": "Urban" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[77.58, 12.95], [77.60, 12.95], [77.60, 12.97], [77.58, 12.97], [77.58, 12.95]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "class": "Forest" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[77.62, 12.92], [77.64, 12.92], [77.64, 12.94], [77.62, 12.94], [77.62, 12.92]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "class": "Agriculture" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[77.60, 12.90], [77.62, 12.90], [77.62, 12.92], [77.60, 12.92], [77.60, 12.90]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "class": "Barren" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[77.64, 12.96], [77.66, 12.96], [77.66, 12.98], [77.64, 12.98], [77.64, 12.96]]]
+      }
+    }
+  ]
+} 
