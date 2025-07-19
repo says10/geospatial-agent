@@ -1,7 +1,7 @@
 import streamlit as st
-from src.geospatial_agent.interface.streamlit_app.components.map_renderer import render_map, render_dual_map, render_temporal_map
-from src.geospatial_agent.interface.streamlit_app.components.graph_renderer import render_workflow_graph
-from src.geospatial_agent.interface.streamlit_app.components.audio_renderer import render_audio_input_if_visible
+from geospatial_agent.interface.streamlit_app.components.map_renderer import render_map, render_dual_map, render_temporal_map
+from geospatial_agent.interface.streamlit_app.components.graph_renderer import render_workflow_graph
+from geospatial_agent.interface.streamlit_app.components.audio_renderer import render_audio_input_if_visible
 import geopandas as gpd
 from shapely.geometry import Polygon
 import streamlit.components.v1 as components
@@ -10,7 +10,7 @@ import time
 import datetime
 import os
 from dotenv import load_dotenv
-from src.geospatial_agent.infrastructure.llm_clients.openai_client import get_cot_steps_from_chatgpt
+from geospatial_agent.infrastructure.llm_clients.openai_client import get_cot_steps_from_chatgpt
 
 # Load environment variables from .env
 load_dotenv()
