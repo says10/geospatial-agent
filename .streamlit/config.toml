@@ -1,2 +1,11 @@
 [theme]
-base="dark" 
+base="dark"
+
+[server]
+enableCORS = false
+
+environment = "production"
+
+[global]
+# Add PYTHONPATH for Streamlit Cloud to find geospatial_agent
+pythonPath = "src" 
