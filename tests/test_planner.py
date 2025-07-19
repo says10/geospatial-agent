@@ -1,5 +1,4 @@
 import pytest
-from geospatial_agent.application.agents.planner import PlannerAgent
 
 def test_planner_create_plan():
     planner = PlannerAgent()
